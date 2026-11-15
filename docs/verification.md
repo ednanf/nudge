@@ -16,6 +16,8 @@ The test suite covers:
 - Project CRUD, encrypted usernames/passwords, secret-free API responses and preserved passwords on edit.
 - Manual failure persistence and unsaved tests without history writes.
 - Persisted execution leases, overlap rejection and stale lease recovery.
+- A four-check scheduled pool that drains all projects while retaining the cross-invocation lease.
+- A simulated 65-second authentication cold start and a stalled operation aborted at the 90-second total deadline.
 - Cron secret validation, disabled-project exclusion, duplicate suppression, failure isolation and partial-run resumption.
 - Ten-project storage cap, retention, persisted login rate limits and UTC schedule boundaries.
 

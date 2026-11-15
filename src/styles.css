@@ -826,7 +826,7 @@ td strong {
   font-size: 22px;
 }
 .project-dialog form {
-  padding: 0 28px 24px;
+  padding: 8px 28px 24px;
 }
 fieldset {
   border: 0;
@@ -1195,7 +1195,7 @@ details .hint {
     gap: 12px;
   }
   .project-dialog form {
-    padding: 0 19px 22px;
+    padding: 8px 19px 22px;
   }
   .dialog-heading {
     padding: 22px 19px 18px;

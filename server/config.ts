@@ -5,9 +5,11 @@ export function required(name: string): string {
 }
 export const limits = {
   projects: 10,
-  requestMs: 8000,
-  checkMs: 20000,
-  leaseMs: 270000,
+  requestMs: 75000,
+  checkMs: 90000,
+  concurrency: 4,
+  // Outlive Vercel's 300-second function deadline, including a short cleanup margin.
+  leaseMs: 330000,
   retentionMs: 90 * 86400000,
 };
 export function appOrigin() {

@@ -84,9 +84,22 @@ export async function scheduledChecks(run = runCheck) {
         [slot, limits.projects],
       )
     ).rows;
-    const results = [];
-    for (const project of projects)
-      results.push(await checkProject(String(project.id), 'scheduled', slot, run));
+    const results: Awaited<ReturnType<typeof checkProject>>[] = [];
+    let next = 0;
+    const worker = async () => {
+      while (next < projects.length) {
+        const project = projects[next++];
+        results.push(await checkProject(String(project.id), 'scheduled', slot, run));
+      }
+    };
+    // Ten projects take at most three 90-second waves. Wait for every worker before releasing
+    // the cross-invocation lease, even if a database operation fails in one worker.
+    const workers = await Promise.allSettled(
+      Array.from({ length: Math.min(limits.concurrency, projects.length) }, worker),
+    );
+    for (const worker of workers) {
+      if (worker.status === 'rejected') throw worker.reason;
+    }
     await query('UPDATE cron_runs SET finished_at = ? WHERE slot = ?', [Date.now(), slot]);
     await cleanup();
     return {

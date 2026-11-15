@@ -425,6 +425,57 @@ test('partial cron runs resume unfinished projects without repeating completed o
     1,
   );
 });
+test(
+  'scheduled cold starts use a bounded pool and drain every enabled project',
+  { timeout: 3000 },
+  async () => {
+    await query('UPDATE projects SET enabled = 0');
+    await query('UPDATE cron_runs SET finished_at = NULL WHERE slot = ?', [weeklySlot()]);
+    for (let i = 0; i < 5; i++) await saveProject(input(`Cold-start project ${i}`));
+    let started = 0;
+    let active = 0;
+    let peak = 0;
+    const releases: (() => void)[] = [];
+    let firstWave!: () => void;
+    let finalWave!: () => void;
+    const firstStarted = new Promise<void>((resolve) => {
+      firstWave = resolve;
+    });
+    const lastStarted = new Promise<void>((resolve) => {
+      finalWave = resolve;
+    });
+    const pending = scheduledChecks(async () => {
+      started++;
+      active++;
+      peak = Math.max(peak, active);
+      const completed = new Promise<void>((resolve) => {
+        releases.push(resolve);
+      });
+      if (started === 4) firstWave();
+      if (started === 5) finalWave();
+      await completed;
+      active--;
+      return { success: true, error: null, durationMs: 65000 };
+    });
+    await firstStarted;
+    assert.equal(active, 4);
+    assert.equal(started, 4);
+    await assert.rejects(
+      withLease(async () => true),
+      { status: 409 },
+    );
+    releases.splice(0).forEach((release) => release());
+    await lastStarted;
+    releases.splice(0).forEach((release) => release());
+    const result = await pending;
+    assert.equal(peak, 4);
+    assert.equal(started, 5);
+    assert.equal(active, 0);
+    assert.equal(result.checked, 5);
+    assert.equal(result.succeeded, 5);
+  },
+);
+
 test('storage enforces project cap and cleans up expired records', async () => {
   for (let i = Number((await query('SELECT count(*) AS n FROM projects')).rows[0].n); i < 10; i++)
     await saveProject(input(`Project ${i}`));
@@ -493,4 +544,51 @@ test('production origin validation accepts the configured and assigned productio
       else process.env[key] = previous[key];
     }
   }
+});
+
+test('authentication can take 65 seconds to wake a service before keep-alive', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 0 });
+  const controller = new AbortController();
+  t.mock.method(AbortSignal, 'timeout', (milliseconds: number) => {
+    setTimeout(() => controller.abort(), milliseconds);
+    return controller.signal;
+  });
+  let calls = 0;
+  const pending = runCheck(config, input(), async (_url, _method, _headers, _body, signal) => {
+    if (++calls === 2) return { status: 204, body: '', cookies: [] };
+    return new Promise((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true });
+      setTimeout(
+        () => resolve({ status: 200, body: '{"token":"fake-token"}', cookies: [] }),
+        65000,
+      );
+    });
+  });
+  t.mock.timers.tick(65000);
+  const result = await pending;
+  assert.equal(result.success, true);
+  assert.equal(result.durationMs, 65000);
+  assert.equal(calls, 2);
+});
+
+test('a stalled cold start stops at the total check deadline with a safe error', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 0 });
+  const controller = new AbortController();
+  t.mock.method(AbortSignal, 'timeout', (milliseconds: number) => {
+    setTimeout(() => controller.abort(), milliseconds);
+    return controller.signal;
+  });
+  const pending = runCheck(config, input(), async (_url, _method, _headers, _body, signal) => {
+    return new Promise((_resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('network exception with secret')), {
+        once: true,
+      });
+    });
+  });
+  t.mock.timers.tick(90000);
+  const result = await pending;
+  assert.equal(result.success, false);
+  assert.equal(result.durationMs, 90000);
+  assert.match(result.error!, /90-second deadline/);
+  assert.ok(!result.error!.includes('secret'));
 });

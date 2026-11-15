@@ -90,6 +90,12 @@ export async function runCheck(
     );
     return { success: true, error: null, durationMs: Date.now() - started };
   } catch (error) {
-    return { success: false, error: safeCheckError(error), durationMs: Date.now() - started };
+    return {
+      success: false,
+      error: signal.aborted
+        ? 'Check exceeded the 90-second deadline. The service may still be starting; try again.'
+        : safeCheckError(error),
+      durationMs: Date.now() - started,
+    };
   }
 }
