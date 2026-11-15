@@ -117,9 +117,7 @@ export function ProjectForm({
       <div className="dialog-heading">
         <div>
           <span className="eyebrow">CONNECTION SETUP</span>
-          <h2 id="form-title">
-            {project ? 'Adjust your connection' : 'Give a project a little lift.'}
-          </h2>
+          <h2 id="form-title">{project ? 'Edit project' : 'Add project'}</h2>
         </div>
         <button
           type="button"
@@ -272,7 +270,7 @@ export function ProjectForm({
           </details>
         </fieldset>
         <fieldset disabled={!!busy}>
-          <legend>03 / The nudge</legend>
+          <legend>03 / Keep-alive request</legend>
           <div className="form-grid endpoint">
             <label>
               Method

@@ -8,7 +8,7 @@ import { hash, Algorithm } from '@node-rs/argon2';
 import { db, query } from '../server/db';
 import { encrypt, decrypt } from '../server/crypto';
 import { handle } from '../server/app';
-import { authenticated, sessionCookie } from '../server/auth';
+import { authenticated, sessionCookie, requireOrigin } from '../server/auth';
 import { publicAddress, resolvePublic, type Transport } from '../server/http';
 import { runCheck } from '../server/runner';
 import { safeCheckError, CheckError } from '../server/errors';
@@ -456,4 +456,41 @@ test('schedule calculations handle Monday noon and delayed invocations in UTC', 
   assert.equal(weeklySlot(new Date('2026-11-16T11:59:00Z')), '2026-11-09T12:00:00.000Z');
   assert.equal(nextExecution(new Date('2026-11-15T22:00:00Z')), '2026-11-16T12:00:00.000Z');
   assert.equal(nextExecution(new Date('2026-11-16T12:01:00Z')), '2026-11-23T12:00:00.000Z');
+});
+
+test('production origin validation accepts the configured and assigned production domain only', () => {
+  const keys = ['APP_ORIGIN', 'VERCEL_ENV', 'VERCEL_PROJECT_PRODUCTION_URL'];
+  const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  try {
+    process.env.APP_ORIGIN = 'https://nudge-configured.vercel.app';
+    process.env.VERCEL_ENV = 'production';
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = 'nudge-primary.vercel.app';
+    const check = (origin?: string) =>
+      requireOrigin(
+        new Request('https://nudge-primary.vercel.app/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(origin ? { Origin: origin } : {}) },
+        }),
+      );
+    assert.doesNotThrow(() => check('https://nudge-configured.vercel.app'));
+    assert.doesNotThrow(() => check('https://nudge-primary.vercel.app'));
+    for (const origin of [
+      undefined,
+      'null',
+      'https://evil.example',
+      'https://other-project.vercel.app',
+      'https://nudge-primary.vercel.app.evil.example',
+      'http://nudge-primary.vercel.app',
+      'https://nudge-primary.vercel.app:444',
+    ])
+      assert.throws(() => check(origin), { status: 403 });
+    process.env.VERCEL_ENV = 'preview';
+    assert.throws(() => check('https://nudge-primary.vercel.app'), { status: 403 });
+    assert.doesNotThrow(() => check('https://nudge-configured.vercel.app'));
+  } finally {
+    for (const key of keys) {
+      if (previous[key] === undefined) delete process.env[key];
+      else process.env[key] = previous[key];
+    }
+  }
 });

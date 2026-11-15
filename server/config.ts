@@ -15,3 +15,12 @@ export function appOrigin() {
   if (process.env.VERCEL && url.protocol !== 'https:') throw new Error('APP_ORIGIN must use HTTPS');
   return url.origin;
 }
+
+export function appOrigins(): string[] {
+  const origins = [appOrigin()];
+  // This is Vercel's trusted project-level production domain, not an arbitrary request host.
+  if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    origins.push(new URL(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`).origin);
+  }
+  return origins;
+}

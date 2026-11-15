@@ -125,9 +125,6 @@ a {
 .meter-label,
 .meter-desc,
 .toggle-caption,
-.schedule-badge,
-.note-tag,
-.login-bottom,
 .trigger-label {
   font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
 }
@@ -138,17 +135,6 @@ a {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-.led {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #da883d;
-  box-shadow:
-    inset 0 1px 1px #fff9,
-    0 0 0 2px #ada29630,
-    0 0 5px #977c5f60;
 }
 .small-button,
 .refresh-button,
@@ -350,27 +336,6 @@ a {
   letter-spacing: 1px;
   text-shadow: 1px 2px 1px #4c3e3015;
 }
-.meter-light {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #c2b397;
-  box-shadow:
-    inset 0 1px 3px #0003,
-    0 1px 0 #fff8;
-}
-.meter-light.lit {
-  background: #cf7c35;
-  box-shadow:
-    inset 0 1px 2px #fff8,
-    0 0 6px #db8b4d80;
-}
-.bad .meter-light.lit {
-  background: #b47757;
-  box-shadow:
-    inset 0 1px 2px #fff8,
-    0 0 6px #b4775780;
-}
 .meter-desc {
   font-size: 8px;
   display: block;
@@ -423,14 +388,6 @@ a {
 }
 .last-run {
   margin-left: auto;
-}
-.schedule-badge {
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: #908981;
-  border: 1px dashed #c4bbb2;
-  border-radius: 3px;
-  padding: 8px;
 }
 .workspace {
   margin-top: 37px;
@@ -748,13 +705,6 @@ a {
   margin: 0;
   max-width: 580px;
 }
-.note-tag {
-  margin-left: auto;
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: #aaa198;
-  white-space: nowrap;
-}
 footer {
   padding: 27px 0 30px;
   display: flex;
@@ -765,10 +715,6 @@ footer {
 }
 footer > span:first-child {
   font-weight: 500;
-}
-.footer-divider {
-  color: #c8c1b9;
-  margin: 0 8px;
 }
 footer .etched {
   font-size: 8px;
@@ -1026,13 +972,13 @@ details .hint {
     0 8px 18px #5443311a;
 }
 .login-panel .brand {
-  margin-bottom: 40px;
+  margin-bottom: 26px;
 }
 .login-panel h1 {
   font-size: 37px;
   letter-spacing: -1.7px;
   font-weight: 600;
-  margin: 13px 0;
+  margin: 13px 0 24px;
   line-height: 1.15;
 }
 .login-panel > p {
@@ -1046,26 +992,6 @@ details .hint {
 .login-panel .button {
   width: 100%;
   justify-content: space-between;
-}
-.login-bottom {
-  border-top: 1px solid #d1c7bc;
-  padding-top: 22px;
-  margin-top: 28px;
-  font-size: 8px;
-  letter-spacing: 0.5px;
-  color: #978a7d;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.login-bottom span {
-  margin-left: auto;
-  font-size: 7px;
-}
-.login-footnote {
-  color: #a49a90;
-  font-size: 10px;
-  margin-top: 24px;
 }
 .boot {
   min-height: 100dvh;

@@ -108,7 +108,7 @@ export function App() {
     return (
       <main className="boot" role="status">
         <Mark />
-        <p>Warming up the panel…</p>
+        <p>Loading…</p>
       </main>
     );
   if (!signedIn)
@@ -135,10 +135,7 @@ export function App() {
           </span>
         </a>
         <div className="topbar-right">
-          <span className="personal-label">
-            <i className="led" />
-            PERSONAL EDITION
-          </span>
+          <span className="personal-label">PERSONAL EDITION</span>
           <button className="small-button" disabled={!!busy} onClick={() => void signOut()}>
             {busy === 'logout' ? 'Signing out…' : 'Sign out'} <span aria-hidden="true">↗</span>
           </button>
@@ -147,16 +144,12 @@ export function App() {
       <main>
         <section className="intro">
           <div>
-            <div className="eyebrow">A LITTLE ATTENTION. A LOT MORE UPTIME.</div>
-            <h1>
-              Keep the good
-              <br className="mobile-break" /> things going.
-            </h1>
-            <p>Your projects deserve to stay awake. We give them a gentle nudge.</p>
+            <h1>Projects</h1>
+            <p>Manage API connections and review weekly database checks.</p>
           </div>
           <div className="schedule-stamp">
             <span className="stamp-pin" />
-            <span className="eyebrow">YOUR WEEKLY DOSE</span>
+            <span className="eyebrow">WEEKLY SCHEDULE</span>
             <strong>
               MON <span>/</span> 12:00 <small>UTC</small>
             </strong>
@@ -177,16 +170,12 @@ export function App() {
           <span className="screw bottom-left" />
           <span className="screw bottom-right" />
           <div className="panel-caption">
-            <span>
-              <i className="led" />
-              SYSTEM OVERVIEW
-            </span>
-            <span className="etched">NUDGE / CONTROL PANEL 01</span>
+            <span>SYSTEM OVERVIEW</span>
           </div>
           <div className="meters">
             {[
               ['Registered', projects.length, 'All your connections', ''],
-              ['On schedule', enabled, 'Ready for a weekly lift', ''],
+              ['On schedule', enabled, 'Enabled for weekly checks', ''],
               ['Healthy', healthy, 'Latest check passed', 'good'],
               ['Need attention', failed, 'Latest check failed', 'bad'],
             ].map(([label, number, desc, tone]) => (
@@ -194,7 +183,6 @@ export function App() {
                 <span className="meter-label">{label}</span>
                 <div className="meter-display">
                   <span>{data ? String(number).padStart(2, '0') : '—'}</span>
-                  <i className={`meter-light ${Number(number) ? 'lit' : ''}`} />
                 </div>
                 <span className="meter-desc">{desc}</span>
               </div>
@@ -206,7 +194,7 @@ export function App() {
                 ◷
               </span>
               <div>
-                <span className="eyebrow">NEXT EXPECTED NUDGE</span>
+                <span className="eyebrow">NEXT SCHEDULED CHECK</span>
                 <strong>{data ? time(data.nextExecution) : 'Loading…'}</strong>
                 <span className="hint">Weekly · shown in your local time</span>
               </div>
@@ -218,7 +206,6 @@ export function App() {
                 {data?.lastScheduled && !data.lastScheduled.finishedAt ? ' · incomplete' : ''}
               </strong>
             </div>
-            <span className="schedule-badge">SET IT. FORGET IT.</span>
           </div>
         </section>
         <section className="workspace">
@@ -257,10 +244,10 @@ export function App() {
           </div>
           <div className="section-heading">
             <div>
-              <h2>{tab === 'projects' ? 'Your little ecosystem' : 'The paper trail'}</h2>
+              <h2>{tab === 'projects' ? 'Connections' : 'Execution history'}</h2>
               <p>
                 {tab === 'projects'
-                  ? 'Small requests. Happier databases.'
+                  ? 'Configured API connections.'
                   : 'The latest 100 checks. History is kept for 90 days.'}
               </p>
             </div>
@@ -275,15 +262,14 @@ export function App() {
           {!data && loading ? (
             <div className="empty-state" role="status">
               <span className="empty-symbol">◌</span>
-              <h3>Reading the instruments…</h3>
+              <h3>Loading connections…</h3>
             </div>
           ) : tab === 'projects' ? (
             projects.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-symbol">↗</div>
-                <span className="eyebrow">READY WHEN YOU ARE</span>
-                <h3>Every project needs a little encouragement.</h3>
-                <p>Connect your first API. Nudge will take it from here, once a week.</p>
+                <h3>No projects yet.</h3>
+                <p>Add an API connection to include it in weekly checks.</p>
                 <button className="button secondary" onClick={() => setEditing('new')}>
                   Connect your first project <span aria-hidden="true">↗</span>
                 </button>
@@ -307,7 +293,7 @@ export function App() {
                       <span className="hint">
                         {p.lastCheck
                           ? `Checked ${time(p.lastCheck.startedAt)}`
-                          : 'Waiting for its first nudge'}
+                          : 'No checks recorded'}
                       </span>
                       {p.lastCheck?.error && (
                         <span className="check-error">{p.lastCheck.error}</span>
@@ -336,7 +322,7 @@ export function App() {
                           void action(`check-${p.id}`, () => api(`/projects/${p.id}/check`, 'POST'))
                         }
                       >
-                        {busy === `check-${p.id}` ? 'Nudging…' : 'Nudge now'}
+                        {busy === `check-${p.id}` ? 'Checking…' : 'Run check'}
                         <span aria-hidden="true">↗</span>
                       </button>
                       <button
@@ -368,8 +354,8 @@ export function App() {
           ) : checks.length === 0 ? (
             <div className="empty-state">
               <span className="empty-symbol">≡</span>
-              <h3>A fresh sheet.</h3>
-              <p>Run your first nudge to start the activity log.</p>
+              <h3>No checks yet.</h3>
+              <p>Run a manual check or wait for the next scheduled execution.</p>
             </div>
           ) : (
             <div className="history-wrap">
@@ -407,19 +393,14 @@ export function App() {
         <aside className="desk-note">
           <span aria-hidden="true">✳</span>
           <p>
-            A nudge only works if it reaches your database. Pick an API endpoint that performs a
-            real MongoDB operation.
+            Use an API endpoint that performs a real MongoDB operation. A successful HTTP response
+            alone does not confirm database activity.
           </p>
-          <span className="note-tag">A FRIENDLY REMINDER</span>
         </aside>
       </main>
       <footer>
-        <span>
-          nudge. <span className="footer-divider">/</span> A little lift for your side projects.
-        </span>
-        <span className="etched">
-          POWERED BY VIAGRA <span aria-hidden="true">↗</span>
-        </span>
+        <span>Nudge</span>
+        <span className="etched">Personal edition</span>
       </footer>
       {editing && (
         <ProjectForm
@@ -458,13 +439,7 @@ function Login({ initialError, onLogin }: { initialError: string; onLogin: () =>
           <Mark />
           <span>nudge.</span>
         </div>
-        <div className="eyebrow">YOUR PERSONAL CONTROL PANEL</div>
-        <h1>
-          A little lift.
-          <br />
-          Peace of mind.
-        </h1>
-        <p>Sign in to keep your side projects going.</p>
+        <h1>Sign in</h1>
         <form onSubmit={submit}>
           <label>
             Administrator password
@@ -487,12 +462,7 @@ function Login({ initialError, onLogin }: { initialError: string; onLogin: () =>
             {busy ? 'Signing in…' : 'Open dashboard'} <span aria-hidden="true">↗</span>
           </button>
         </form>
-        <div className="login-bottom">
-          <i className="led" />
-          PRIVATE BY DESIGN <span>ONE ADMIN. ZERO FUSS.</span>
-        </div>
       </div>
-      <p className="login-footnote">Nudge · Personal edition</p>
     </main>
   );
 }

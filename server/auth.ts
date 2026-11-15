@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { verify } from '@node-rs/argon2';
 import { query } from './db.js';
 import { digest } from './crypto.js';
-import { appOrigin, required } from './config.js';
+import { appOrigin, appOrigins, required } from './config.js';
 import { HttpError } from './errors.js';
 const lifetime = 7 * 86400000;
 const cookieName = 'nudge_session';
@@ -33,7 +33,7 @@ export async function requireAdmin(request: Request) {
   if (!(await authenticated(request))) throw new HttpError(401, 'Please sign in to continue.');
 }
 export function requireOrigin(request: Request) {
-  if (request.headers.get('origin') !== appOrigin())
+  if (!appOrigins().includes(request.headers.get('origin') || ''))
     throw new HttpError(403, 'Request origin is not allowed.');
   if (!request.headers.get('content-type')?.startsWith('application/json'))
     throw new HttpError(415, 'Use application/json.');
