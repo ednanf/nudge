@@ -1,9 +1,9 @@
 import { randomBytes } from 'node:crypto';
 import { verify } from '@node-rs/argon2';
-import { query } from './db';
-import { digest } from './crypto';
-import { appOrigin, required } from './config';
-import { HttpError } from './errors';
+import { query } from './db.js';
+import { digest } from './crypto.js';
+import { appOrigin, required } from './config.js';
+import { HttpError } from './errors.js';
 const lifetime = 7 * 86400000;
 const cookieName = 'nudge_session';
 export function sessionToken(request: Request): string {

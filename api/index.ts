@@ -1,2 +1,2 @@
-import { handle } from '../server/app';
+import { handle } from '../server/app.js';
 export default { fetch: handle };

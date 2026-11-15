@@ -1,8 +1,8 @@
 import { CookieJar } from 'tough-cookie';
-import { limits } from './config';
-import { CheckError, safeCheckError } from './errors';
-import { transport, type Transport } from './http';
-import type { ProjectConfig, Secrets } from './validation';
+import { limits } from './config.js';
+import { CheckError, safeCheckError } from './errors.js';
+import { transport, type Transport } from './http.js';
+import type { ProjectConfig, Secrets } from './validation.js';
 export type CheckResult = { success: boolean; error: string | null; durationMs: number };
 export async function runCheck(
   config: ProjectConfig,

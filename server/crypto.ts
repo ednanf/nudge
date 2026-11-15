@@ -5,7 +5,7 @@ import {
   createHash,
   timingSafeEqual,
 } from 'node:crypto';
-import { required } from './config';
+import { required } from './config.js';
 function key() {
   const encoded = required('ENCRYPTION_KEY');
   const value = Buffer.from(encoded, 'base64');

@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import type { Row } from '@libsql/client';
-import { query } from './db';
-import { decrypt, encrypt } from './crypto';
-import { limits } from './config';
-import { HttpError } from './errors';
-import { projectSchema, type ProjectConfig, type Secrets } from './validation';
+import { query } from './db.js';
+import { decrypt, encrypt } from './crypto.js';
+import { limits } from './config.js';
+import { HttpError } from './errors.js';
+import { projectSchema, type ProjectConfig, type Secrets } from './validation.js';
 export function publicProject(row: Row) {
   return {
     id: String(row.id),

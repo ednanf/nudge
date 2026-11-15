@@ -2,8 +2,8 @@ import { lookup } from 'node:dns/promises';
 import https from 'node:https';
 import { isIP } from 'node:net';
 import ipaddr from 'ipaddr.js';
-import { limits } from './config';
-import { CheckError } from './errors';
+import { limits } from './config.js';
+import { CheckError } from './errors.js';
 export type Target = { address: string; family: 4 | 6 };
 export type HttpResult = { status: number; body: string; cookies: string[] };
 export type Transport = (

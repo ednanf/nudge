@@ -1,5 +1,5 @@
 import { createClient, type Client, type InArgs } from '@libsql/client';
-import { required } from './config';
+import { required } from './config.js';
 let client: Client | undefined;
 export function db(): Client {
   if (!client) {

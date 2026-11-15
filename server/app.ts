@@ -1,9 +1,16 @@
-import { required } from './config';
-import { equal } from './crypto';
-import { authenticated, login, logout, requireAdmin, requireOrigin, sessionCookie } from './auth';
-import { db, query } from './db';
-import { HttpError } from './errors';
-import { getProject, listProjects, prepareProject, saveProject } from './projects';
+import { required } from './config.js';
+import { equal } from './crypto.js';
+import {
+  authenticated,
+  login,
+  logout,
+  requireAdmin,
+  requireOrigin,
+  sessionCookie,
+} from './auth.js';
+import { db, query } from './db.js';
+import { HttpError } from './errors.js';
+import { getProject, listProjects, prepareProject, saveProject } from './projects.js';
 import {
   checkProject,
   cleanup,
@@ -11,8 +18,8 @@ import {
   nextExecution,
   scheduledChecks,
   withLease,
-} from './checks';
-import { runCheck } from './runner';
+} from './checks.js';
+import { runCheck } from './runner.js';
 async function jsonBody(request: Request): Promise<unknown> {
   const reader = request.body?.getReader();
   if (!reader) throw new HttpError(400, 'A JSON request body is required.');

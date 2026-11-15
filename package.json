@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dev": "node --watch --env-file-if-exists=.env --import tsx scripts/dev.ts",
-    "build": "tsc --noEmit && vite build",
-    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
     "test": "node --import tsx --test tests/core.test.ts",
     "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
     "admin:hash": "node --import tsx scripts/admin-hash.ts",

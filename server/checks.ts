@@ -1,11 +1,11 @@
 import { randomUUID } from 'node:crypto';
-import { query } from './db';
-import { limits } from './config';
-import { decrypt } from './crypto';
-import { HttpError } from './errors';
-import { getProject } from './projects';
-import { runCheck, type CheckResult } from './runner';
-import type { ProjectConfig, Secrets } from './validation';
+import { query } from './db.js';
+import { limits } from './config.js';
+import { decrypt } from './crypto.js';
+import { HttpError } from './errors.js';
+import { getProject } from './projects.js';
+import { runCheck, type CheckResult } from './runner.js';
+import type { ProjectConfig, Secrets } from './validation.js';
 export function weeklySlot(now = new Date()): string {
   const monday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12));
   monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
