@@ -135,7 +135,6 @@ export function App() {
           </span>
         </a>
         <div className="topbar-right">
-          <span className="personal-label">PERSONAL EDITION</span>
           <button className="small-button" disabled={!!busy} onClick={() => void signOut()}>
             {busy === 'logout' ? 'Signing out…' : 'Sign out'} <span aria-hidden="true">↗</span>
           </button>
@@ -169,9 +168,7 @@ export function App() {
           <span className="screw top-right" />
           <span className="screw bottom-left" />
           <span className="screw bottom-right" />
-          <div className="panel-caption">
-            <span>SYSTEM OVERVIEW</span>
-          </div>
+          <div className="panel-caption">SYSTEM OVERVIEW</div>
           <div className="meters">
             {[
               ['Registered', projects.length, 'All your connections', ''],
@@ -398,10 +395,6 @@ export function App() {
           </p>
         </aside>
       </main>
-      <footer>
-        <span>Nudge</span>
-        <span className="etched">Personal edition</span>
-      </footer>
       {editing && (
         <ProjectForm
           project={editing === 'new' ? undefined : editing}
