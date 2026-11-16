@@ -426,11 +426,6 @@ a {
   align-items: center;
   gap: 10px;
 }
-.refresh-button {
-  font-size: 22px;
-  width: 35px;
-  height: 35px;
-}
 .button {
   display: inline-flex;
   align-items: center;
@@ -453,7 +448,8 @@ a {
     0 3px 4px #7e431d26;
   text-shadow: 0 1px #9c5028;
 }
-.button.secondary {
+.button.secondary,
+.small-button {
   color: #62594f;
   background: linear-gradient(#fbf6f1, #e7e1db);
   border-color: #c4bab0;
@@ -461,6 +457,19 @@ a {
     inset 0 1px 0 #fff,
     0 2px 0 #c7c0b8,
     0 3px 3px #49382610;
+}
+.button.refresh-button {
+  flex-shrink: 0;
+  width: 37px;
+  height: 37px;
+  padding: 0;
+  line-height: 1;
+}
+.refresh-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
 }
 .button:hover {
   filter: brightness(1.035);
@@ -658,6 +667,11 @@ a {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
+}
+.settings-button {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
 }
 .delete-button {
   font-size: 19px;
@@ -1179,7 +1193,7 @@ details .hint {
     margin-left: auto;
   }
   .project-controls .icon-button {
-    width: 30px;
+    width: 32px;
   }
   .project-controls .delete-button {
     margin-left: 0;

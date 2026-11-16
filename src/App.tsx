@@ -224,12 +224,25 @@ export function App() {
             </nav>
             <div className="toolbar-actions">
               <button
-                className="refresh-button"
+                className="button secondary refresh-button"
                 onClick={() => void refresh()}
                 disabled={loading || !!busy}
                 aria-label="Refresh dashboard"
               >
-                ↻
+                <svg
+                  className="refresh-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M20 7v5h-5" />
+                  <path d="M20 12a8 8 0 1 0-2.34 5.66M20 12a8 8 0 0 0-2.34-5.66" />
+                </svg>
               </button>
               <button
                 className="button primary"
@@ -324,7 +337,7 @@ export function App() {
                         <span aria-hidden="true">↗</span>
                       </button>
                       <button
-                        className="icon-button"
+                        className="button secondary icon-button settings-button"
                         disabled={!!busy}
                         onClick={() => setEditing(p)}
                         aria-label={`Edit ${p.name}`}
