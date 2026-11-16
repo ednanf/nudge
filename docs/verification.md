@@ -1,6 +1,6 @@
 # Verification
 
-Validated locally on 2026-11-15 with Node.js 24. No cloud resources were provisioned or deployed.
+Initial local checks and subsequent deployment verification were performed on 2026-11-15 with Node.js 24. The automated suite uses a temporary local database; deployment checks use the configured production installation without publishing its addresses or credentials.
 
 ## Automated coverage
 
@@ -28,8 +28,10 @@ A separate local QA environment with a temporary SQLite database was used to ver
 
 No production credentials were used. The seeded success/failure display examples are synthetic; the browser's actual manual check used a private address to verify safe rejection before network access. Successful external authentication is exercised with mocked HTTP responses in the automated suite.
 
-## Deployment boundary
+## Deployment verification
 
-Type checking and the Vite production build validate local source compilation. A real Turso connection, Vercel packaging/routing, native Argon2 binary loading on Vercel, cron delivery and an actual portfolio API must still be verified after the owner authorizes deployment and supplies configuration. No live Vercel deployment or remote database was created during implementation.
+The application has been deployed to Vercel with Turso. Post-deployment checks verified API routing, native Argon2 loading, unauthenticated route protection, authenticated database reads with a temporary session, and cron authorization with an empty batch. The test session and temporary automation bypass were revoked. The owner subsequently configured and manually tested portfolio operations successfully.
+
+The weekly cron configuration was confirmed installed. An authorized manual endpoint check is not evidence of delivery of a future scheduled Monday invocation; automatic delivery remains an operational check in the dashboard.
 
 HTTP success does not prove database access. Confirm the selected endpoint's MongoDB operation separately. Weekly scheduling, capped project count, bounded requests and free-plan features are designed for occasional personal use; provider availability and future plan changes are outside the application.

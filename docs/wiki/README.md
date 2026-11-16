@@ -2,7 +2,7 @@
 
 Nudge is a single-administrator utility that authenticates against portfolio APIs and calls a small endpoint that accesses MongoDB. It runs on Vercel Hobby with Turso Free. The application has no paid integrations, workers, queues, public registration or multi-user features.
 
-This wiki describes the implemented system, its technical decisions and the procedures needed to maintain it. The source code and lockfile remain authoritative when behavior changes. Read the published [GitHub Wiki](https://github.com/ednanf/nudge/wiki); these files are its versioned source. The owner manually configured and tested the application successfully on November 15, 2026.
+This wiki describes the implemented system, its technical decisions and the procedures needed to maintain it. The source code and lockfile remain authoritative when behavior changes. Read the published [GitHub Wiki](https://github.com/ednanf/nudge/wiki); these files are its versioned source and are synchronized automatically after successful production deployment. The owner manually configured and tested the application successfully on November 15, 2026.
 
 ## Contents
 

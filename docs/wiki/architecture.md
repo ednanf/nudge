@@ -85,3 +85,9 @@ Styling uses CSS rather than a UI framework or external font service. The orange
 Favicons live in [public](../../public): an SVG, a PNG, a multi-size 16/32/48 px ICO and a 180 px Apple touch icon. [generate-favicons.py](../../scripts/generate-favicons.py) regenerates raster assets using Python's standard library; its geometry mirrors the SVG. Update both when changing the mark, run the generator and commit the generated assets. The build copies them into `dist`.
 
 The page title defaults to `Nudge — Dashboard`; the client switches to `Nudge — Sign in` when signed out. The original logo wordmark has no trailing dot.
+
+The dashboard's copyright notice sits below the database-endpoint note and matches the owner notice in [LICENSE](../../LICENSE). The Add project form keeps eight pixels between the header divider and its first section on desktop and mobile.
+
+## Documentation publication
+
+The machine-readable contract is [OpenAPI.yaml](../../OpenAPI.yaml). The canonical Wiki Markdown remains in `docs/wiki`. [sync-wiki.yml](../../.github/workflows/sync-wiki.yml) runs after a successful Vercel commit status on the current production branch, then [sync-wiki.py](../../scripts/sync-wiki.py) rebuilds and pushes the Wiki with a deployed-commit footer. The application repository currently receives Vercel commit statuses rather than GitHub Deployment API records, so the workflow uses the observed `status` event instead of assuming `deployment_status` is emitted.
