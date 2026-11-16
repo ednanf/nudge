@@ -4,6 +4,7 @@ import { CheckError, safeCheckError } from './errors.js';
 import { transport, type Transport } from './http.js';
 import type { ProjectConfig, Secrets } from './validation.js';
 export type CheckResult = { success: boolean; error: string | null; durationMs: number };
+// Project Viagra: keep idle connections up.
 export async function runCheck(
   config: ProjectConfig,
   secrets: Secrets,

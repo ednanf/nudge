@@ -1,6 +1,6 @@
 # Nudge
 
-A little lift for your side projects. Internally: **Viagra** — keeping your connections up, one sensible request at a time.
+Technical reference: [Nudge wiki](docs/wiki/README.md).
 
 Nudge is a private, single-admin utility that signs into your portfolio APIs with disposable accounts and calls an endpoint that reaches MongoDB. It runs weekly and keeps a short history. The dashboard is a responsive, skeuomorphic control panel built with CSS, without a UI framework or external fonts.
 
@@ -84,7 +84,7 @@ There is no guarantee of future provider pricing or availability. Keep the accou
 3. Set the login path and method (POST by default; PUT also supported), credential JSON field names, username/email, and password. Optional extra authentication JSON is merged with the credentials; configured credential fields take precedence.
 4. Choose a bearer token and its dot-separated response path (`token`, `accessToken`, `data.token`), or cookie authentication. Cookies respect their domain, path, expiration and Secure attributes; there is no persistent cookie jar.
 5. Choose a safe GET or POST keep-alive endpoint. A read such as `GET /api/me` is usually suitable **only if that route actually queries MongoDB**. Avoid logout, delete, purchase, email, or other side-effect endpoints. Optional POST JSON is supported.
-6. Optionally **Test connection** before saving. This performs real requests with the disposable account but does not persist the configuration or history. Save, then **Nudge now** to record a check.
+6. Optionally **Test connection** before saving. This performs real requests with the disposable account but does not persist the configuration or history. Save, then **Run check** to record a check.
 
 Saved usernames, passwords and extra authentication JSON are encrypted and never returned by the project API. Leave those fields blank while editing to retain them. Enter `{}` in additional authentication JSON to clear previous extra fields. Passwords are never displayed after saving. Endpoint paths and keep-alive JSON are ordinary configuration: keep secrets out of them.
 
@@ -138,3 +138,9 @@ tests/               Focused security, runner and API tests
 ```
 
 The original development brief is retained in [docs/specification.md](docs/specification.md).
+
+## Copyright
+
+© 2026 Ednan R. Frizzera Filho. All rights reserved.
+
+See [LICENSE](LICENSE).
