@@ -88,7 +88,7 @@ These records explain the current implementation. They are not a list of unappro
 
 **Reason:** Vercel assigned two production hostnames; accepting only the manually configured URL blocked legitimate login from the other hostname. Trusting every Vercel host or reflecting request headers would weaken origin validation unnecessarily.
 
-**Consequence:** Both known production URLs work. Other projects, preview hosts and lookalike suffix domains remain blocked. Cookies are still host-scoped.
+**Consequence:** The configured origin and current Vercel-supplied production origin work. Adding a custom primary domain can change the latter; historical deployment aliases are not automatically trusted. Other projects, preview hosts and lookalike suffix domains remain blocked. Cookies are still host-scoped.
 
 ## 12. Minimal UI and short-lived history
 
