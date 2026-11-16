@@ -645,10 +645,19 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 28px;
   height: 29px;
+  padding: 0;
+  line-height: 1;
   font-size: 16px;
   color: #93887c;
+}
+.settings-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 .delete-button {
   font-size: 19px;
