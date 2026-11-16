@@ -330,7 +330,30 @@ export function App() {
                         aria-label={`Edit ${p.name}`}
                         title="Edit project"
                       >
-                        ⚙
+                        <svg
+                          className="settings-icon"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <g fill="currentColor">
+                            <path
+                              fillRule="evenodd"
+                              d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"
+                            />
+                            {Array.from({ length: 8 }, (_, tooth) => (
+                              <rect
+                                key={tooth}
+                                x="10"
+                                y="1"
+                                width="4"
+                                height="5"
+                                rx="0.5"
+                                transform={`rotate(${tooth * 45} 12 12)`}
+                              />
+                            ))}
+                          </g>
+                        </svg>
                       </button>
                       <button
                         className="icon-button delete-button"
