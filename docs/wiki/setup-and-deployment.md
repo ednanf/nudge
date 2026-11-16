@@ -114,3 +114,19 @@ Provider terms can change. The app's design was checked against these sources on
 - [Render Free service behavior](https://render.com/docs/free#spinning-down-on-idle): allow for service cold starts.
 
 The application does not provision services, upgrade plans or purchase anything through its setup scripts.
+
+## Publish the GitHub Wiki
+
+The native [GitHub Wiki](https://github.com/ednanf/nudge/wiki) is a separate Git repository. The canonical Markdown source remains in `docs/wiki` in the application repository. Edit and push those source files first, then rebuild and publish the Wiki copy:
+
+```sh
+wiki_checkout="$(mktemp -d)"
+git clone https://github.com/ednanf/nudge.wiki.git "$wiki_checkout"
+python3 scripts/build-wiki.py "$wiki_checkout"
+git -C "$wiki_checkout" diff --check
+git -C "$wiki_checkout" add '*.md'
+git -C "$wiki_checkout" commit -m "Sync technical documentation"
+git -C "$wiki_checkout" push
+```
+
+The builder converts documentation links to native Wiki page URLs and source-file links to the main repository, and generates the navigation sidebar and copyright footer. It uses Python's standard library and adds no service or runtime dependency. It does not push, enable features or automatically synchronize either repository. A no-change rebuild needs no new commit. The initial Home page must already exist before cloning a new Wiki repository.

@@ -100,8 +100,8 @@ These records explain the current implementation. They are not a list of unappro
 
 ## 13. Source-managed documentation and reserved rights
 
-**Decision:** Keep the technical wiki in `docs/wiki`, link it from the README, and keep a root copyright notice with all rights reserved.
+**Decision:** Keep the canonical technical documentation in `docs/wiki`, publish a native GitHub Wiki copy with generated navigation, link it from the README, and keep a root copyright notice with all rights reserved.
 
-**Reason:** Architecture, contracts, decisions and operating procedures should version alongside implementation changes. A repository file is sufficient; no separate documentation platform is required.
+**Reason:** Architecture, contracts, decisions and operating procedures should version alongside implementation changes. Versioned source keeps documentation reviewable alongside code; GitHub Wiki provides repository navigation without another hosted documentation service.
 
-**Consequence:** Documentation updates are ordinary Git changes. No open-source license is granted by publishing the repository or its technical documentation. Do not replace the copyright notice with a permissive license without the owner's instruction.
+**Consequence:** Documentation source updates are ordinary Git changes. The Wiki has its own Git repository and is explicitly rebuilt with `scripts/build-wiki.py` and pushed after source updates; synchronization is not automatic. No open-source license is granted by publishing the repository or its technical documentation. Do not replace the copyright notice with a permissive license without the owner's instruction.
