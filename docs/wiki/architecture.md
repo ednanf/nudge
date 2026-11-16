@@ -82,6 +82,8 @@ Extensionless imports worked under the development TypeScript loader but failed 
 
 Styling uses CSS rather than a UI framework or external font service. The orange mark and controls are tactile; status dots are reserved for actual check states. There are no decorative status lights, edition labels or promotional slogans in the dashboard.
 
+The dashboard refresh arrow and configuration dialog close control use fixed-size, centered SVG icons. Their alignment is independent of font metrics; the refresh arrow uses a balanced circular outline and the close icon uses symmetric diagonal strokes.
+
 At the mobile breakpoint (viewport widths up to 700 px), inputs, selects and textareas use 16 px text to avoid automatic zoom when focused in iOS Safari. This covers sign-in and project configuration forms; desktop field sizes remain 12 px. Browser pinch-to-zoom remains available.
 
 The owner manually tested the fix on iOS 27 Safari on 2026-11-16 and confirmed that focusing text fields no longer causes automatic zoom.

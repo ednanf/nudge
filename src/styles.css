@@ -477,7 +477,8 @@ a {
   padding: 0;
   line-height: 1;
 }
-.refresh-icon {
+.refresh-icon,
+.close-icon {
   display: block;
   flex-shrink: 0;
   width: 22px;
@@ -855,7 +856,6 @@ td strong {
 }
 .dialog-heading .icon-button {
   flex-shrink: 0;
-  font-size: 22px;
 }
 .project-dialog form {
   padding: 8px 28px 24px;
