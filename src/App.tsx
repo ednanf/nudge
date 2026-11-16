@@ -41,6 +41,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState<Project | 'new' | null>(null);
   const [tab, setTab] = useState<'projects' | 'history'>('projects');
+  const [now, setNow] = useState(Date.now);
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
@@ -81,6 +82,21 @@ export function App() {
   useEffect(() => {
     if (signedIn) void refresh();
   }, [signedIn, refresh]);
+  useEffect(() => {
+    if (!signedIn) return;
+    const update = () => {
+      setNow(Date.now());
+      if (document.visibilityState === 'visible' && !busy) void refresh();
+    };
+    const timer = window.setInterval(update, 30_000);
+    window.addEventListener('focus', update);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', update);
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, [signedIn, refresh, busy]);
   async function action(key: string, work: () => Promise<unknown>) {
     setBusy(key);
     setError('');
@@ -193,7 +209,12 @@ export function App() {
               </span>
               <div>
                 <span className="eyebrow">NEXT SCHEDULED CHECK</span>
-                <strong>{data ? time(data.nextExecution) : 'Loading…'}</strong>
+                <strong aria-live="polite">
+                  {data ? time(data.nextExecution) : 'Loading…'}
+                  {data && Date.parse(data.nextExecution) <= now && (
+                    <span className="schedule-pending">Pending</span>
+                  )}
+                </strong>
                 <span className="hint">Weekly · shown in your local time</span>
               </div>
             </div>

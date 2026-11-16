@@ -90,9 +90,23 @@ export async function handle(request: Request): Promise<Response> {
           'SELECT started_at, finished_at FROM cron_runs ORDER BY started_at DESC LIMIT 1',
         )
       ).rows[0];
+      const schedule = (
+        await query(`SELECT
+          (SELECT MAX(slot) FROM cron_runs WHERE finished_at IS NOT NULL) AS completed_slot,
+          (SELECT MIN(slot) FROM cron_runs) AS first_run_slot,
+          (SELECT MIN(created_at) FROM projects) AS first_project_at`)
+      ).rows[0];
       return json({
         projects: await listProjects(),
-        nextExecution: nextExecution(),
+        nextExecution: nextExecution(
+          new Date(),
+          schedule.completed_slot == null ? null : String(schedule.completed_slot),
+          schedule.first_run_slot != null
+            ? Date.parse(String(schedule.first_run_slot))
+            : schedule.first_project_at == null
+              ? undefined
+              : Number(schedule.first_project_at),
+        ),
         lastScheduled: lastRun
           ? {
               startedAt: Number(lastRun.started_at),

@@ -44,7 +44,7 @@ Deployment URLs are intentionally omitted. A deployed alias is not automatically
 | Authentication/keep-alive JSON configuration | 8,192 UTF-16 code units per serialized object            | [server/validation.ts](../../server/validation.ts) |
 | Outgoing HTTP response body                  | 64 KB                                                    | [server/http.ts](../../server/http.ts)             |
 
-Weekly checks are sufficient for the intended workload. The displayed next execution is an expectation; exact cron delivery time is not important to this application. A successful HTTP result does not prove MongoDB activity: the chosen portfolio endpoint must actually perform a database operation.
+Weekly checks are sufficient for the intended workload. The displayed next execution stays pending until a scheduled batch finishes recording its results; missing or incomplete runs do not move the date forward. Exact cron delivery time is not important to this application. A successful HTTP result does not prove MongoDB activity: the chosen portfolio endpoint must actually perform a database operation.
 
 ## Related documents
 
