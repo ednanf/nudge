@@ -104,4 +104,12 @@ These records explain the current implementation. They are not a list of unappro
 
 **Reason:** Architecture, contracts, decisions and operating procedures should version alongside implementation changes. Versioned source keeps documentation reviewable alongside code; GitHub Wiki provides repository navigation without another hosted documentation service.
 
-**Consequence:** Documentation source updates are ordinary Git changes. The Wiki has its own Git repository and is explicitly rebuilt with `scripts/build-wiki.py` and pushed after source updates; synchronization is not automatic. No open-source license is granted by publishing the repository or its technical documentation. Do not replace the copyright notice with a permissive license without the owner's instruction.
+**Consequence:** Documentation source updates are ordinary Git changes. The Wiki has its own Git repository and is rebuilt with `scripts/build-wiki.py`. A GitHub Actions workflow publishes it after a successful Vercel status for the latest main commit; manual publication remains a recovery path. No open-source license is granted by publishing the repository or its technical documentation. Do not replace the copyright notice with a permissive license without the owner's instruction.
+
+## 14. Publish documentation with deployed behavior
+
+**Decision:** Feature and bug-fix changes update the canonical Wiki source and API specification in the same commit. A deployment-triggered GitHub Actions workflow publishes documentation only after Vercel reports that the current `main` commit succeeded.
+
+**Reason:** A manual copy step can be forgotten, while publishing on every push can describe behavior that failed to deploy. This repository exposes successful Vercel commit statuses, so the workflow consumes that actual event.
+
+**Consequence:** The Wiki footer identifies the deployed source revision. Pending/failed or superseded commits are skipped, concurrent publications are serialized, and the branch/status guards are checked before pushing. The workflow uses only the ephemeral repository token. It publishes maintained documentation; it does not invent descriptions from code. [AGENTS.md](../../AGENTS.md) requires keeping that source current with every behavior change. Repository About remains blank, deployment URLs stay unpublished, and only explicitly authorized public documentation links are included in the README.

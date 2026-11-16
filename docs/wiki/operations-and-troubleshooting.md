@@ -90,5 +90,5 @@ Authenticated setup tests and manual checks do perform real portfolio requests. 
 - Keep server ESM imports compatible with emitted JavaScript.
 - Change timeouts, concurrency, lease expiry and project capacity as one budgeted decision.
 - Keep source and generated favicon assets in sync.
-- Update this wiki when routes, schema, limits or operating procedures change.
+- Update the canonical Wiki source in the same commit when routes, schema, limits or operating procedures change. Confirm the post-deployment Wiki workflow succeeds. If it fails, re-run it after correcting the problem; check the published source SHA in the Wiki footer.
 - Stay on Vercel Hobby and Turso Free; no automatic paid upgrades are part of this project.

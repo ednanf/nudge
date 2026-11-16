@@ -117,16 +117,20 @@ The application does not provision services, upgrade plans or purchase anything 
 
 ## Publish the GitHub Wiki
 
-The native [GitHub Wiki](https://github.com/ednanf/nudge/wiki) is a separate Git repository. The canonical Markdown source remains in `docs/wiki` in the application repository. Edit and push those source files first, then rebuild and publish the Wiki copy:
+The native [GitHub Wiki](https://github.com/ednanf/nudge/wiki) is a separate Git repository. The canonical Markdown source remains in `docs/wiki` in the application repository. The default path is automatic: update the affected source documentation with every feature or fix, push to `main`, and wait for the Vercel `success` status and the **Sync Wiki after production deployment** workflow. The workflow verifies the exact current main commit has a successful status from `vercel[bot]`, publishes that commit's documentation and records its SHA in the Wiki footer. Failed, pending, preview-only and superseded commits do not publish. It uses the ephemeral repository `GITHUB_TOKEN` with `contents: write` and `statuses: read`; no added token secret or paid service is required.
+
+For recovery, manually dispatch the workflow from Actions (or `gh workflow run sync-wiki.yml`). The same successful-deployment guard still applies. A failed sync is visible as a failed Actions run; fix it and re-run before considering documentation publication complete. Keep code and documentation changes together as required by [AGENTS.md](../../AGENTS.md).
+
+The explicit Git-based fallback remains available after verifying the intended source commit is deployed:
 
 ```sh
 wiki_checkout="$(mktemp -d)"
 git clone https://github.com/ednanf/nudge.wiki.git "$wiki_checkout"
-python3 scripts/build-wiki.py "$wiki_checkout"
+WIKI_SOURCE_SHA="$(git rev-parse HEAD)" python3 scripts/build-wiki.py "$wiki_checkout"
 git -C "$wiki_checkout" diff --check
 git -C "$wiki_checkout" add '*.md'
 git -C "$wiki_checkout" commit -m "Sync technical documentation"
 git -C "$wiki_checkout" push
 ```
 
-The builder converts documentation links to native Wiki page URLs and source-file links to the main repository, and generates the navigation sidebar and copyright footer. It uses Python's standard library and adds no service or runtime dependency. It does not push, enable features or automatically synchronize either repository. A no-change rebuild needs no new commit. The initial Home page must already exist before cloning a new Wiki repository.
+The builder converts documentation links to native Wiki page URLs and source-file links to the main repository, and generates the navigation sidebar and copyright footer. It uses Python's standard library and adds no service or runtime dependency. The builder itself does not push or enable features; the deployment workflow performs the publication automatically. Wiki writes are serialized, and stale events are checked again before pushing to avoid publishing an older revision over a newer deployment. A no-change rebuild needs no new commit. The initial Home page must already exist before cloning a new Wiki repository.

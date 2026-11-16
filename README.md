@@ -1,6 +1,8 @@
+<img src="public/favicon.svg" alt="Nudge icon" width="64" height="64" />
+
 # Nudge
 
-Technical reference: [GitHub Wiki](https://github.com/ednanf/nudge/wiki). The versioned source lives in [docs/wiki](docs/wiki/README.md). Import [OpenAPI.yaml](OpenAPI.yaml) for the machine-readable API contract.
+Technical reference: [GitHub Wiki](https://github.com/ednanf/nudge/wiki). Hosted API documentation: [Zudoku](https://docs.frizzera.dev/api/nudge). The versioned source lives in [docs/wiki](docs/wiki/README.md). Import [OpenAPI.yaml](OpenAPI.yaml) for the machine-readable API contract.
 
 Nudge is a private, single-admin utility that signs into your portfolio APIs with disposable accounts and calls an endpoint that reaches MongoDB. It runs weekly and keeps a short history. The dashboard is a responsive, skeuomorphic control panel built with CSS, without a UI framework or external fonts.
 

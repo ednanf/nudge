@@ -4,6 +4,7 @@ Usage: python3 scripts/build-wiki.py /path/to/nudge.wiki-checkout
 Publish the resulting files by committing/pushing the separate Wiki repository.
 """
 import re
+import os
 import sys
 from pathlib import Path
 from urllib.parse import quote, urlsplit
@@ -57,7 +58,13 @@ def build(destination):
     sidebar += f'\n\n[Repository]({REPO}) · [Documentation source]({REPO}/tree/main/docs/wiki)\n'
     (destination / '_Sidebar.md').write_text(sidebar)
     notice = (ROOT / 'LICENSE').read_text().splitlines()[0]
-    (destination / '_Footer.md').write_text(notice + f'\n\n[Source documentation]({REPO}/tree/main/docs/wiki) · [License]({REPO}/blob/main/LICENSE)\n')
+    footer = notice + f'\n\n[Source documentation]({REPO}/tree/main/docs/wiki) · [License]({REPO}/blob/main/LICENSE)\n'
+    revision = os.environ.get('WIKI_SOURCE_SHA')
+    if revision:
+        if not re.fullmatch(r'[a-f0-9]{40}', revision):
+            raise ValueError('WIKI_SOURCE_SHA must be a full commit SHA.')
+        footer += f'\nPublished from deployed commit [{revision[:12]}]({REPO}/commit/{revision}).\n'
+    (destination / '_Footer.md').write_text(footer)
     for filename in expected:
         text = (destination / filename).read_text()
         for target in re.findall(r'\]\(([^)]+)\)', text):
