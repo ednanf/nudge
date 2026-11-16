@@ -31,6 +31,9 @@ function Status({ success, enabled = true }: { success?: boolean; enabled?: bool
 }
 export function App() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  useEffect(() => {
+    document.title = signedIn === false ? 'Nudge — Sign in' : 'Nudge — Dashboard';
+  }, [signedIn]);
   const [data, setData] = useState<Dashboard | null>(null);
   const [checks, setChecks] = useState<Check[]>([]);
   const [error, setError] = useState('');
@@ -130,9 +133,7 @@ export function App() {
       <header className="topbar">
         <a className="brand" href="/" aria-label="Nudge dashboard">
           <Mark />
-          <span>
-            nudge<span className="brand-period">.</span>
-          </span>
+          <span>nudge</span>
         </a>
         <div className="topbar-right">
           <button className="small-button" disabled={!!busy} onClick={() => void signOut()}>
@@ -430,7 +431,7 @@ function Login({ initialError, onLogin }: { initialError: string; onLogin: () =>
         <span className="screw top-right" />
         <div className="brand">
           <Mark />
-          <span>nudge.</span>
+          <span>nudge</span>
         </div>
         <h1>Sign in</h1>
         <form onSubmit={submit}>
