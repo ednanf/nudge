@@ -10,11 +10,11 @@ Rate limiting is database-backed and global: five attempts per fifteen-minute bu
 
 ## Sessions
 
-Each login creates 32 random bytes, represented as a 64-character hex token. The browser gets `nudge_session`; the database stores only the token's SHA-256 hash. Cookies use HttpOnly, SameSite=Strict, path `/` and a seven-day Max-Age. Secure is enabled on Vercel or HTTPS, with a local-HTTP exception for development.
+Each login creates 32 random bytes, represented as a 64-character hex token. The browser gets `nudge_session`; the database stores only the token's SHA-256 hash. Cookies use HttpOnly, SameSite=Strict, path `/` and a seven-day Max-Age by default, or thirty days when **Remember me for 30 days** is checked. Secure is enabled on Vercel or HTTPS, with a local-HTTP exception for development.
 
 Server validation checks token format, stored hash, expiration and `admin_version`. The version is a digest of the configured Argon2id hash. Replacing `ADMIN_PASSWORD_HASH`, even with a new hash for the same plaintext password, invalidates existing sessions.
 
-Session expiry is fixed at seven days and is not extended on every request. Logout deletes the active session and expires its cookie. Logging in also revokes an old session presented by that browser, but the system does not enforce a single concurrent browser session.
+Session expiry is fixed at seven days by default, or thirty days when the login request includes `rememberMe: true`; it is not extended on every request. Cookie Max-Age and the database expiration use the same selected lifetime. Existing sessions retain their original expiry; checking the box on a later login does not extend other browsers' sessions. The optional request field must be a JSON boolean, not a string. Logout deletes the active session and expires its cookie. Logging in also revokes an old session presented by that browser, but the system does not enforce a single concurrent browser session.
 
 ## Browser origin checks
 

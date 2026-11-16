@@ -43,7 +43,7 @@ All variables are server-only. Never prefix them with `VITE_`.
 | `CRON_SECRET`         | Random secret of at least 32 characters                                            |
 | `APP_ORIGIN`          | Exact browser origin, e.g. `https://nudge.example.vercel.app`; HTTPS in production |
 
-No `SESSION_SECRET` is needed. Sessions are opaque random tokens; only their SHA-256 hashes are stored in the database. They expire after seven days and are revoked on logout. Changing the admin hash invalidates existing sessions. Login allows five attempts per 15-minute UTC bucket, globally across instances, intentionally shared for the one administrator. Cookies use HttpOnly and SameSite=Strict; Secure is mandatory on Vercel and HTTPS, omitted only for local HTTP.
+No `SESSION_SECRET` is needed. Sessions are opaque random tokens; only their SHA-256 hashes are stored in the database. They expire after seven days by default, or thirty days when **Remember me for 30 days** is selected at login, and are revoked on logout. Changing the admin hash invalidates existing sessions. Login allows five attempts per 15-minute UTC bucket, globally across instances, intentionally shared for the one administrator. Cookies use HttpOnly and SameSite=Strict; Secure is mandatory on Vercel and HTTPS, omitted only for local HTTP.
 
 ## Database initialization and migrations
 

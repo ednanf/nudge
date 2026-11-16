@@ -31,21 +31,21 @@ The custom domain was verified during wiki publication. A deployed alias is not 
 
 ## Operating limits
 
-| Setting                                      | Current value                                 | Owning source                                      |
-| -------------------------------------------- | --------------------------------------------- | -------------------------------------------------- |
-| Projects per installation                    | 10                                            | [server/config.ts](../../server/config.ts)         |
-| Schedule                                     | Monday, 12:00 UTC / 09:00 São Paulo           | [vercel.json](../../vercel.json)                   |
-| Socket inactivity timeout                    | 75 seconds                                    | [server/http.ts](../../server/http.ts)             |
-| Total HTTP check deadline                    | 90 seconds                                    | [server/runner.ts](../../server/runner.ts)         |
-| Concurrent scheduled checks                  | At most 4                                     | [server/checks.ts](../../server/checks.ts)         |
-| Vercel function duration                     | 300 seconds                                   | [vercel.json](../../vercel.json)                   |
-| Execution lease expiry                       | 330 seconds                                   | [server/config.ts](../../server/config.ts)         |
-| History retention                            | 90 days; latest 100 records returned          | [server/checks.ts](../../server/checks.ts)         |
-| Administrator session lifetime               | 7 days, fixed expiry                          | [server/auth.ts](../../server/auth.ts)             |
-| Login limit                                  | 5 attempts per global 15-minute bucket        | [server/auth.ts](../../server/auth.ts)             |
-| Incoming JSON body                           | 32 KB                                         | [server/app.ts](../../server/app.ts)               |
-| Authentication/keep-alive JSON configuration | 8,192 UTF-16 code units per serialized object | [server/validation.ts](../../server/validation.ts) |
-| Outgoing HTTP response body                  | 64 KB                                         | [server/http.ts](../../server/http.ts)             |
+| Setting                                      | Current value                                            | Owning source                                      |
+| -------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------- |
+| Projects per installation                    | 10                                                       | [server/config.ts](../../server/config.ts)         |
+| Schedule                                     | Monday, 12:00 UTC / 09:00 São Paulo                      | [vercel.json](../../vercel.json)                   |
+| Socket inactivity timeout                    | 75 seconds                                               | [server/http.ts](../../server/http.ts)             |
+| Total HTTP check deadline                    | 90 seconds                                               | [server/runner.ts](../../server/runner.ts)         |
+| Concurrent scheduled checks                  | At most 4                                                | [server/checks.ts](../../server/checks.ts)         |
+| Vercel function duration                     | 300 seconds                                              | [vercel.json](../../vercel.json)                   |
+| Execution lease expiry                       | 330 seconds                                              | [server/config.ts](../../server/config.ts)         |
+| History retention                            | 90 days; latest 100 records returned                     | [server/checks.ts](../../server/checks.ts)         |
+| Administrator session lifetime               | 7 days by default; 30 days when remembered, fixed expiry | [server/auth.ts](../../server/auth.ts)             |
+| Login limit                                  | 5 attempts per global 15-minute bucket                   | [server/auth.ts](../../server/auth.ts)             |
+| Incoming JSON body                           | 32 KB                                                    | [server/app.ts](../../server/app.ts)               |
+| Authentication/keep-alive JSON configuration | 8,192 UTF-16 code units per serialized object            | [server/validation.ts](../../server/validation.ts) |
+| Outgoing HTTP response body                  | 64 KB                                                    | [server/http.ts](../../server/http.ts)             |
 
 Weekly checks are sufficient for the intended workload. The displayed next execution is an expectation; exact cron delivery time is not important to this application. A successful HTTP result does not prove MongoDB activity: the chosen portfolio endpoint must actually perform a database operation.
 

@@ -4,7 +4,7 @@ import { query } from './db.js';
 import { digest } from './crypto.js';
 import { appOrigin, appOrigins, required } from './config.js';
 import { HttpError } from './errors.js';
-const lifetime = 7 * 86400000;
+const sessionLifetime = (rememberMe: boolean) => (rememberMe ? 30 : 7) * 86400000;
 const cookieName = 'nudge_session';
 export function sessionToken(request: Request): string {
   return (
@@ -16,9 +16,9 @@ export function sessionToken(request: Request): string {
       ?.slice(cookieName.length + 1) || ''
   );
 }
-export function sessionCookie(token: string, clear = false): string {
+export function sessionCookie(token: string, clear = false, rememberMe = false): string {
   const secure = process.env.VERCEL || appOrigin().startsWith('https:');
-  return `${cookieName}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${clear ? 0 : lifetime / 1000}${secure ? '; Secure' : ''}`;
+  return `${cookieName}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${clear ? 0 : sessionLifetime(rememberMe) / 1000}${secure ? '; Secure' : ''}`;
 }
 export async function authenticated(request: Request, now = Date.now()): Promise<boolean> {
   const token = sessionToken(request);
@@ -38,7 +38,11 @@ export function requireOrigin(request: Request) {
   if (!request.headers.get('content-type')?.startsWith('application/json'))
     throw new HttpError(415, 'Use application/json.');
 }
-export async function login(request: Request, password: string): Promise<string> {
+export async function login(
+  request: Request,
+  password: string,
+  rememberMe = false,
+): Promise<string> {
   const now = Date.now();
   // Global persisted limit is deliberate for one administrator: cannot be bypassed with spoofed IP headers.
   const bucket = String(Math.floor(now / 900000));
@@ -56,7 +60,7 @@ export async function login(request: Request, password: string): Promise<string>
   const token = randomBytes(32).toString('hex');
   await query('INSERT INTO sessions(token_hash, expires_at, admin_version) VALUES (?, ?, ?)', [
     digest(token),
-    now + lifetime,
+    now + sessionLifetime(rememberMe),
     digest(encoded),
   ]);
   const old = sessionToken(request);

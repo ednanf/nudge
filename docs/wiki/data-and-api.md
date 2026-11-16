@@ -29,19 +29,21 @@ The browser calls the same origin under `/api`. Responses are JSON and are not c
 
 Cron uses `Authorization: Bearer <CRON_SECRET>` independently of browser sessions. Never expose that secret in client code.
 
-| Route                          | Access                   | Behavior                                                                          |
-| ------------------------------ | ------------------------ | --------------------------------------------------------------------------------- |
-| `POST /api/auth/login`         | Trusted origin           | Verify `{ "password": "..." }`, apply rate limit, issue a session cookie          |
-| `POST /api/auth/logout`        | Session + trusted origin | Delete the session and expire its cookie                                          |
-| `GET /api/auth/session`        | Public                   | Return `{ "authenticated": true/false }`                                          |
-| `GET /api/projects`            | Session                  | Return projects, next execution and latest cron-run timestamps                    |
-| `POST /api/projects`           | Session + trusted origin | Validate/encrypt/create; HTTP 201                                                 |
-| `PATCH /api/projects/:id`      | Session + trusted origin | Replace editable configuration, or update only `enabled`                          |
-| `DELETE /api/projects/:id`     | Session + trusted origin | Delete project/history under the execution lease                                  |
-| `POST /api/projects/:id/check` | Session + trusted origin | Run and persist a manual check                                                    |
-| `POST /api/projects/test`      | Session + trusted origin | Test an unsaved configuration; optional existing `id` preserves saved credentials |
-| `GET /api/checks`              | Session                  | Return the latest 100 execution records                                           |
-| `GET /api/cron`                | Cron bearer secret       | Run enabled projects for the current weekly slot                                  |
+| Route                          | Access                   | Behavior                                                                                           |
+| ------------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------- |
+| `POST /api/auth/login`         | Trusted origin           | Verify `{ "password": "...", "rememberMe": true/false }`, apply rate limit, issue a session cookie |
+| `POST /api/auth/logout`        | Session + trusted origin | Delete the session and expire its cookie                                                           |
+| `GET /api/auth/session`        | Public                   | Return `{ "authenticated": true/false }`                                                           |
+| `GET /api/projects`            | Session                  | Return projects, next execution and latest cron-run timestamps                                     |
+| `POST /api/projects`           | Session + trusted origin | Validate/encrypt/create; HTTP 201                                                                  |
+| `PATCH /api/projects/:id`      | Session + trusted origin | Replace editable configuration, or update only `enabled`                                           |
+| `DELETE /api/projects/:id`     | Session + trusted origin | Delete project/history under the execution lease                                                   |
+| `POST /api/projects/:id/check` | Session + trusted origin | Run and persist a manual check                                                                     |
+| `POST /api/projects/test`      | Session + trusted origin | Test an unsaved configuration; optional existing `id` preserves saved credentials                  |
+| `GET /api/checks`              | Session                  | Return the latest 100 execution records                                                            |
+| `GET /api/cron`                | Cron bearer secret       | Run enabled projects for the current weekly slot                                                   |
+
+`rememberMe` is optional and defaults to false. True sets both cookie and stored session expiry to thirty days; false or omission keeps seven days. Non-boolean values return 400 before attempting password verification. Logout and administrator-hash changes invalidate either session type. No database migration is required because sessions already store their own expiration timestamps.
 
 There are no registration, account-management, recovery or OAuth routes. History has no pagination or per-project query filter in this version.
 

@@ -13,7 +13,7 @@ openssl rand -base64 32
 openssl rand -hex 32
 ```
 
-The administrator helper asks for a password without echoing it. It requires an interactive terminal and a password of 12–1024 characters. Put its Argon2id output in `ADMIN_PASSWORD_HASH`. Enter the original password, not the hash, on the login page.
+The administrator helper asks for a password without echoing it. It requires an interactive terminal and a password of 12–1024 characters. Put its Argon2id output in `ADMIN_PASSWORD_HASH`. Enter the original password, not the hash, on the login page. The optional **Remember me for 30 days** checkbox creates a thirty-day session; otherwise the session lasts seven days.
 
 Use the base64 output for `ENCRYPTION_KEY` and the hex output for `CRON_SECRET`. Keep the administrator hash in single quotes in environment files so its `$` characters remain literal. Never put a password in a shell command or commit a populated environment file.
 

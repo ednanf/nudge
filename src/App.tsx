@@ -409,6 +409,7 @@ export function App() {
 }
 function Login({ initialError, onLogin }: { initialError: string; onLogin: () => void }) {
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(initialError);
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -416,7 +417,7 @@ function Login({ initialError, onLogin }: { initialError: string; onLogin: () =>
     setBusy(true);
     setError('');
     try {
-      await api('/auth/login', 'POST', { password });
+      await api('/auth/login', 'POST', { password, rememberMe });
       setPassword('');
       onLogin();
     } catch (e) {
@@ -447,6 +448,15 @@ function Login({ initialError, onLogin }: { initialError: string; onLogin: () =>
               maxLength={1024}
               autoFocus
             />
+          </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              disabled={busy}
+            />
+            Remember me for 30 days
           </label>
           {error && (
             <p className="notice error" role="alert">

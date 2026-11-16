@@ -24,7 +24,7 @@ These records explain the current implementation. They are not a list of unappro
 
 **Reason:** There is one owner. An authentication framework, roles and account lifecycle would enlarge the application without serving its use case.
 
-**Consequence:** The operator changes the password through a new hash and deployment. A global persisted login limit is intentionally simple and can temporarily block the owner when exhausted. Multiple active browser sessions are allowed, but there are no additional accounts.
+**Consequence:** The operator changes the password through a new hash and deployment. A global persisted login limit is intentionally simple and can temporarily block the owner when exhausted. Multiple active browser sessions are allowed, but there are no additional accounts. Sessions last seven days by default; the optional **Remember me for 30 days** login choice extends only the newly created session to thirty days. Both cookie and database expiration use that lifetime, retaining logout and hash-rotation revocation without a schema change.
 
 ## 4. Hash administrator passwords; encrypt recoverable credentials
 

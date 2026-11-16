@@ -60,7 +60,7 @@ export async function handle(request: Request): Promise<Response> {
     }
     if (!['GET', 'HEAD'].includes(method)) requireOrigin(request);
     if (path === '/api/auth/login' && method === 'POST') {
-      const body = (await jsonBody(request)) as { password?: unknown };
+      const body = (await jsonBody(request)) as { password?: unknown; rememberMe?: unknown };
       if (
         !body ||
         typeof body.password !== 'string' ||
@@ -68,9 +68,14 @@ export async function handle(request: Request): Promise<Response> {
         body.password.length > 1024
       )
         throw new HttpError(400, 'Provide an administrator password (at most 1024 characters).');
-      const token = await login(request, body.password);
+      if (body.rememberMe !== undefined && typeof body.rememberMe !== 'boolean')
+        throw new HttpError(400, 'rememberMe must be a boolean.');
+      const rememberMe = body.rememberMe === true;
+      const token = await login(request, body.password, rememberMe);
       await cleanup();
-      return json({ authenticated: true }, 200, { 'Set-Cookie': sessionCookie(token) });
+      return json({ authenticated: true }, 200, {
+        'Set-Cookie': sessionCookie(token, false, rememberMe),
+      });
     }
     if (path === '/api/auth/session' && method === 'GET')
       return json({ authenticated: await authenticated(request) });

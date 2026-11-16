@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { hash, Algorithm } from '@node-rs/argon2';
 import { db, query } from '../server/db';
-import { encrypt, decrypt } from '../server/crypto';
+import { encrypt, decrypt, digest } from '../server/crypto';
 import { handle } from '../server/app';
 import { authenticated, sessionCookie, requireOrigin } from '../server/auth';
 import { publicAddress, resolvePublic, type Transport } from '../server/http';
@@ -591,4 +591,76 @@ test('a stalled cold start stops at the total check deadline with a safe error',
   assert.equal(result.durationMs, 90000);
   assert.match(result.error!, /90-second deadline/);
   assert.ok(!result.error!.includes('secret'));
+});
+
+test('remembered sessions match cookie/database expiry and retain revocation protections', async () => {
+  await query('DELETE FROM login_limits');
+  const started = Date.now();
+  const response = await call(
+    '/auth/login',
+    'POST',
+    { password: 'correct-admin-password', rememberMe: true },
+    '',
+  );
+  assert.equal(response.status, 200);
+  const header = response.headers.get('set-cookie')!;
+  assert.match(header, /Max-Age=2592000/);
+  assert.match(header, /HttpOnly/);
+  assert.match(header, /SameSite=Strict/);
+  const rememberedCookie = header.split(';')[0];
+  const rememberedRequest = request('/projects', 'GET', undefined, rememberedCookie);
+  const row = (
+    await query('SELECT expires_at FROM sessions WHERE token_hash = ?', [
+      digest(rememberedCookie.split('=')[1]),
+    ])
+  ).rows[0];
+  const expiry = Number(row.expires_at);
+  assert.ok(expiry >= started + 30 * 86400000);
+  assert.ok(expiry <= Date.now() + 30 * 86400000);
+  assert.equal(await authenticated(rememberedRequest, Date.now() + 29 * 86400000), true);
+  assert.equal(await authenticated(rememberedRequest, expiry - 1), true);
+  assert.equal(await authenticated(rememberedRequest, expiry), false);
+  const previous = process.env.ADMIN_PASSWORD_HASH;
+  try {
+    process.env.ADMIN_PASSWORD_HASH = previous + 'rotated';
+    assert.equal(await authenticated(rememberedRequest), false);
+  } finally {
+    process.env.ADMIN_PASSWORD_HASH = previous;
+  }
+  for (const value of ['true', 1, null, {}, []]) {
+    assert.equal(
+      (
+        await call(
+          '/auth/login',
+          'POST',
+          { password: 'correct-admin-password', rememberMe: value },
+          '',
+        )
+      ).status,
+      400,
+    );
+  }
+  assert.equal((await query('SELECT attempts FROM login_limits')).rows[0].attempts, 1);
+  for (const rememberMe of [undefined, false]) {
+    const result = await call(
+      '/auth/login',
+      'POST',
+      { password: 'correct-admin-password', ...(rememberMe === undefined ? {} : { rememberMe }) },
+      '',
+    );
+    assert.equal(result.status, 200);
+    assert.match(result.headers.get('set-cookie')!, /Max-Age=604800/);
+    const normalRequest = request(
+      '/projects',
+      'GET',
+      undefined,
+      result.headers.get('set-cookie')!.split(';')[0],
+    );
+    assert.equal(await authenticated(normalRequest, Date.now() + 6 * 86400000), true);
+    assert.equal(await authenticated(normalRequest, Date.now() + 8 * 86400000), false);
+  }
+  const signedOut = await call('/auth/logout', 'POST', {}, rememberedCookie);
+  assert.equal(signedOut.status, 200);
+  assert.match(signedOut.headers.get('set-cookie')!, /Max-Age=0/);
+  assert.equal(await authenticated(rememberedRequest), false);
 });

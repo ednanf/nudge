@@ -13,6 +13,7 @@ The test suite covers:
 - Mocked cookie authentication with domain, path and expiry restrictions.
 - Non-2xx failures, redirect refusal, invalid/missing tokens and raw-error sanitization.
 - Protected routes, login, logout, session expiration, admin-hash rotation, Secure cookie attributes and origin checks.
+- Optional thirty-day remembered sessions, matched cookie/database expiry, rejection of non-boolean flags, unchanged seven-day defaults and revocation of remembered sessions.
 - Project CRUD, encrypted usernames/passwords, secret-free API responses and preserved passwords on edit.
 - Manual failure persistence and unsaved tests without history writes.
 - Persisted execution leases, overlap rejection and stale lease recovery.
