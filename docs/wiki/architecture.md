@@ -84,6 +84,8 @@ Styling uses CSS rather than a UI framework or external font service. The orange
 
 At the mobile breakpoint (viewport widths up to 700 px), inputs, selects and textareas use 16 px text to avoid automatic zoom when focused in iOS Safari. This covers sign-in and project configuration forms; desktop field sizes remain 12 px. Browser pinch-to-zoom remains available.
 
+The owner manually tested the fix on iOS 27 Safari on 2026-11-16 and confirmed that focusing text fields no longer causes automatic zoom.
+
 Favicons live in [public](../../public): an SVG, a PNG, a multi-size 16/32/48 px ICO and a 180 px Apple touch icon. [generate-favicons.py](../../scripts/generate-favicons.py) regenerates raster assets using Python's standard library; its geometry mirrors the SVG. Update both when changing the mark, run the generator and commit the generated assets. The build copies them into `dist`.
 
 The page title defaults to `Nudge — Dashboard`; the client switches to `Nudge — Sign in` when signed out. The original logo wordmark has no trailing dot.
