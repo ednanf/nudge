@@ -48,6 +48,8 @@ Weekly checks are sufficient for the intended workload. The displayed next execu
 
 ## Related documents
 
+- [OpenAPI specification](../../OpenAPI.yaml): all implemented REST operations and schemas.
+
 - [Project README](../../README.md): installation and usage overview.
 - [Original specification](../specification.md): original requirements, not a record of current runtime details.
 - [Verification notes](../verification.md): implementation test scope and historical checks.

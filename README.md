@@ -1,6 +1,6 @@
 # Nudge
 
-Technical reference: [GitHub Wiki](https://github.com/ednanf/nudge/wiki). The versioned source lives in [docs/wiki](docs/wiki/README.md).
+Technical reference: [GitHub Wiki](https://github.com/ednanf/nudge/wiki). The versioned source lives in [docs/wiki](docs/wiki/README.md). Import [OpenAPI.yaml](OpenAPI.yaml) for the machine-readable API contract.
 
 Nudge is a private, single-admin utility that signs into your portfolio APIs with disposable accounts and calls an endpoint that reaches MongoDB. It runs weekly and keeps a short history. The dashboard is a responsive, skeuomorphic control panel built with CSS, without a UI framework or external fonts.
 
