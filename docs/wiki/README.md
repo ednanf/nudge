@@ -19,15 +19,12 @@ This wiki describes the implemented system, its technical decisions and the proc
 
 ## Current deployment
 
-- Repository: [ednanf/nudge](https://github.com/ednanf/nudge), private.
-- Application: [nudge.frizzera.dev](https://nudge.frizzera.dev).
-- Vercel application URL: [nudge-theta-three.vercel.app](https://nudge-theta-three.vercel.app).
-- Additional production domain: [nudge-ednanfs-projects.vercel.app](https://nudge-ednanfs-projects.vercel.app).
+- Repository: [ednanf/nudge](https://github.com/ednanf/nudge).
 - Git production branch: `main`; pushes trigger Vercel deployment.
 - Runtime: Node.js 24, one Vercel Function, React/Vite static frontend.
 - Storage: one Turso database, using the libSQL client.
 
-The custom domain was verified during wiki publication. A deployed alias is not automatically a trusted browser-write origin: the server accepts `APP_ORIGIN` and the project production domain supplied by Vercel. After changing the primary domain, confirm the origin configuration and redeploy; do not assume every historical Vercel alias can be used to sign in.
+Deployment URLs are intentionally omitted. A deployed alias is not automatically a trusted browser-write origin: the server accepts `APP_ORIGIN` and the project production domain supplied by Vercel. After changing the primary domain, confirm the origin configuration and redeploy; do not assume every historical Vercel alias can be used to sign in.
 
 ## Operating limits
 

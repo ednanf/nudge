@@ -396,7 +396,7 @@ export function App() {
           </p>
         </aside>
       </main>
-      <footer className="copyright">© 2026 Ednan R. Frizzera Filho. All rights reserved.</footer>
+      <footer className="copyright">Copyright (c) 2026 Ednan Frizzera. All rights reserved.</footer>
       {editing && (
         <ProjectForm
           project={editing === 'new' ? undefined : editing}

@@ -104,4 +104,4 @@ These records explain the current implementation. They are not a list of unappro
 
 **Reason:** Architecture, contracts, decisions and operating procedures should version alongside implementation changes. A repository file is sufficient; no separate documentation platform is required.
 
-**Consequence:** Documentation updates are ordinary Git changes. No open-source license is granted by publishing the private repository's technical documentation. Do not replace the copyright notice with a permissive license without the owner's instruction.
+**Consequence:** Documentation updates are ordinary Git changes. No open-source license is granted by publishing the repository or its technical documentation. Do not replace the copyright notice with a permissive license without the owner's instruction.

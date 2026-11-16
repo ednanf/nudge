@@ -141,6 +141,6 @@ The original development brief is retained in [docs/specification.md](docs/speci
 
 ## Copyright
 
-© 2026 Ednan R. Frizzera Filho. All rights reserved.
+Copyright (c) 2026 Ednan Frizzera. All rights reserved.
 
 See [LICENSE](LICENSE).
