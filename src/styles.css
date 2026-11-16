@@ -1065,6 +1065,13 @@ details .hint {
   }
 }
 @media (max-width: 700px) {
+  /* Keep focused form controls large enough to avoid iOS Safari auto-zoom. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
   .topbar {
     height: 79px;
   }
