@@ -12,8 +12,19 @@ export function weeklySlot(now = new Date()): string {
   if (monday.getTime() > now.getTime()) monday.setUTCDate(monday.getUTCDate() - 7);
   return monday.toISOString();
 }
-export function nextExecution(now = new Date()): string {
-  return new Date(Date.parse(weeklySlot(now)) + 7 * 86400000).toISOString();
+export function nextExecution(
+  now = new Date(),
+  lastCompletedSlot: string | null = null,
+  firstProjectAt?: number,
+): string {
+  // Keep the pending date until cron records completion, even after its delivery window.
+  if (lastCompletedSlot)
+    return new Date(Date.parse(lastCompletedSlot) + 7 * 86400000).toISOString();
+  const anchor = firstProjectAt === undefined ? now : new Date(firstProjectAt);
+  const slot = weeklySlot(anchor);
+  return new Date(
+    Date.parse(slot) + (Date.parse(slot) < anchor.getTime() ? 7 * 86400000 : 0),
+  ).toISOString();
 }
 export async function withLease<T>(work: () => Promise<T>): Promise<T> {
   const owner = randomUUID();

@@ -13,7 +13,14 @@ import { publicAddress, resolvePublic, type Transport } from '../server/http';
 import { runCheck } from '../server/runner';
 import { safeCheckError, CheckError } from '../server/errors';
 import { configSchema, projectSchema } from '../server/validation';
-import { scheduledChecks, weeklySlot, nextExecution, withLease, cleanup } from '../server/checks';
+import {
+  scheduledChecks,
+  weeklySlot,
+  nextExecution,
+  withLease,
+  cleanup,
+  checkProject,
+} from '../server/checks';
 import { saveProject } from '../server/projects';
 let directory: string;
 let cookie = '';
@@ -399,6 +406,10 @@ test('cron authorization, disabled projects, duplicate handling and failure isol
   assert.equal(result.failed, 2);
   assert.equal(count, 2);
   assert.equal((await query('SELECT * FROM checks')).rows.length, 3);
+  assert.equal(
+    (await (await call('/projects')).json()).nextExecution,
+    new Date(Date.parse(result.slot) + 7 * 86400000).toISOString(),
+  );
   assert.equal((await scheduledChecks()).duplicate, true);
   const authorized = await handle(
     new Request(`${origin}/api/cron`, {
@@ -411,7 +422,14 @@ test('cron authorization, disabled projects, duplicate handling and failure isol
 test('partial cron runs resume unfinished projects without repeating completed ones', async () => {
   const slot = weeklySlot();
   await query('UPDATE cron_runs SET finished_at = NULL WHERE slot = ?', [slot]);
+  assert.equal((await (await call('/projects')).json()).nextExecution, slot);
   const project = await saveProject(input('New connection'));
+  await checkProject(project.id, 'manual', null, async () => ({
+    success: true,
+    error: null,
+    durationMs: 1,
+  }));
+  assert.equal((await (await call('/projects')).json()).nextExecution, slot);
   let count = 0;
   const result = await scheduledChecks(async () => {
     count++;
@@ -419,6 +437,10 @@ test('partial cron runs resume unfinished projects without repeating completed o
   });
   assert.equal(count, 1);
   assert.equal(result.checked, 1);
+  assert.equal(
+    (await (await call('/projects')).json()).nextExecution,
+    new Date(Date.parse(slot) + 7 * 86400000).toISOString(),
+  );
   assert.equal(
     (await query('SELECT * FROM checks WHERE project_id = ? AND slot = ?', [project.id, slot])).rows
       .length,
@@ -506,7 +528,18 @@ test('schedule calculations handle Monday noon and delayed invocations in UTC', 
   assert.equal(weeklySlot(new Date('2026-11-16T12:59:00Z')), '2026-11-16T12:00:00.000Z');
   assert.equal(weeklySlot(new Date('2026-11-16T11:59:00Z')), '2026-11-09T12:00:00.000Z');
   assert.equal(nextExecution(new Date('2026-11-15T22:00:00Z')), '2026-11-16T12:00:00.000Z');
-  assert.equal(nextExecution(new Date('2026-11-16T12:01:00Z')), '2026-11-23T12:00:00.000Z');
+  const registered = Date.parse('2026-11-15T22:00:00Z');
+  for (const now of ['2026-11-16T12:01:00Z', '2026-11-17T12:00:00Z', '2026-11-23T12:01:00Z']) {
+    assert.equal(nextExecution(new Date(now), null, registered), '2026-11-16T12:00:00.000Z');
+    assert.equal(
+      nextExecution(new Date(now), '2026-11-09T12:00:00.000Z', registered),
+      '2026-11-16T12:00:00.000Z',
+    );
+  }
+  assert.equal(
+    nextExecution(new Date('2026-11-16T12:01:00Z'), '2026-11-16T12:00:00.000Z', registered),
+    '2026-11-23T12:00:00.000Z',
+  );
 });
 
 test('production origin validation accepts the configured and assigned production domain only', () => {

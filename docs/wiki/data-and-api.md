@@ -128,6 +128,8 @@ Project responses expose `id`, `name`, `enabled`, `config`, `hasPassword`, `hasA
 
 `GET /api/checks` returns `{ checks: [...] }`. Each row contains `id`, `projectId`, `projectName`, `startedAt`, `trigger`, `success`, nullable `error` and `durationMs`.
 
+`nextExecution` is the pending scheduled date, advanced from the latest completed cron slot only after `finished_at` is recorded. It can remain in the past for a missing or incomplete run. Manual checks do not advance it. Before any cron run, the first project registration anchors the initial date; an incomplete first run retains its attempted slot. A completed batch may contain failed check results.
+
 A persisted manual check returns `id`, `projectId`, `startedAt`, `trigger`, `success`, `error` and `durationMs`. An external failure is still a completed Nudge execution: the API returns HTTP 200 with `success: false`.
 
 Cron returns `{ duplicate, slot, checked, succeeded, failed }`. Counts describe work performed by that invocation, not a cumulative total for the week. A completed duplicate returns zero counts.

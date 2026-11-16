@@ -12,6 +12,10 @@ This means Monday at 12:00 UTC, currently 09:00 São Paulo. Displayed execution 
 
 Vercel supplies the cron bearer header from `CRON_SECRET`. The route never depends on a signed-in browser. Cron configuration is installed by deployment; merely editing `vercel.json` locally changes nothing in production.
 
+The dashboard's next scheduled check advances only after a scheduled run records `finished_at`. Passing the scheduled time, a missing delivery, an incomplete run or a manual check does not advance it. The pending date can therefore remain in the past. Before any scheduled run exists, the first project's registration anchors the initial Monday; an attempted first run retains its slot until completion. Completed runs can include failed project checks: completion means results were recorded and batch bookkeeping finished, not that every portfolio API was healthy. This display does not trigger retries or change which weekly slot cron processes when it eventually arrives.
+
+Once the displayed date/time arrives, a small **Pending** label appears alongside it until completion advances the date. A signed-in dashboard refreshes every 30 seconds while visible and when the tab becomes visible or the window regains focus. Background refresh pauses while an administrator action is in progress. Refreshing reads status only; it does not invoke checks.
+
 ## Cold-start budget
 
 | Boundary                        | Limit                     |
