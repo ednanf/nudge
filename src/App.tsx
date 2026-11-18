@@ -205,7 +205,18 @@ export function App() {
           <div className="schedule-strip">
             <div>
               <span className="strip-icon" aria-hidden="true">
-                ◷
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  focusable="false"
+                >
+                  <circle cx="8" cy="8" r="6.5" />
+                  <path d="M8 1.5V8H14.5" />
+                </svg>
               </span>
               <div>
                 <span className="eyebrow">NEXT SCHEDULED CHECK</span>
